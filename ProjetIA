@@ -1,0 +1,70 @@
+package gaussien;
+
+import java.awt.Color;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
+public class MixGauss {
+	
+	static String path = "C:\\Users\\Toufic\\Documents\\M&Ms projet\\";
+    static String imageMMS = path + "mms.png";
+	
+	static BufferedImage bi;
+	
+	private static int D = 3;									//Dimension de l'espace
+	private static int K = 6;									//Nombres de centres
+
+	/*Génère les points en fonction des composantes RGB normalisé de l'image*/
+	/*@Param un tableau avec les composantes RGBs de chaque pixels
+	 * @Return un tableau contenant les points en trois dimensions suivant les composantes RGBs */
+	public static double[][] genData(int[] tabPix) {
+		double[][] result = new double[tabPix.length][D];
+		for(int i = 0; i < tabPix.length; i++) {
+			Color c = new Color(tabPix[i]);
+			result[i][0] = (double) c.getRed()/255;
+			result[i][1] = (double) c.getGreen()/255;
+			result[i][2] = (double) c.getBlue()/255;
+		}
+		return result;
+	}
+	
+	public static double[][] genCenter(int nbCenter) {
+		double[][] result = new double[nbCenter][D];
+		for(int i = 0; i < result.length; i++) {
+			result[i][0] = ;
+			result[i][1] = ;
+			result[i][2] = ;
+		}
+		return result;
+	}
+	
+	public static double[][] Assigner(double[][] data, double[][] center){
+		double[][] result = new double[data.length][center.length];
+		return result;
+	}
+	
+	public static void main(String args[]) throws IOException {
+		
+		System.out.println("Searching for image...");
+		
+		BufferedImage bui = ImageIO.read(new File(imageMMS));
+		int width = bui.getWidth();
+        int height = bui.getHeight();
+        
+        System.out.println("Image found");
+        
+        System.out.println("Retrieving RGB components from pixels");
+		
+		 int[] im_pixels = bui.getRGB(0, 0, width, height, null, 0, width);  //Tableau avec les composantes RGB de tous les pixels
+		 
+		 System.out.println("Creation of temporary database");
+		 
+		 double[][] dataTemp = genData(im_pixels);
+		 double[][] centres = genCenter(K);
+		 
+		 double[][] data = Assigner(dataTemp, centres);
+	}
+}
