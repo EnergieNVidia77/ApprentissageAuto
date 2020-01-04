@@ -69,7 +69,7 @@ public class MixGauss {
 
 	public static double[][] updateM(double[][] r, double[][] x, double[][] m, double[] R) {
 		for (int k = 0; k < m.length; k++) {
-			for (int i = 0; i < x[k].length; i++) {
+			for (int i = 0; i < m[k].length; i++) {
 				double sum = 0;
 				for (int d = 0; d < x.length; d++) {
 					sum += r[d][k] * x[d][i];
@@ -81,8 +81,8 @@ public class MixGauss {
 	}
 
 	public static void updateVar(double[][] r, double[][] x, double[][] m, double[] R) {
-		for (int k = 0; k < r[0].length; k++) {
-			for (int i = 0; i < x[k].length; i++) {
+		for (int k = 0; k < variance.length; k++) {
+			for (int i = 0; i < variance[k].length; i++) {
 				double sum = 0;
 				for (int d = 0; d < x.length; d++) {
 					sum += r[d][k] * Math.pow(x[d][i] - m[k][i], 2);
@@ -93,7 +93,7 @@ public class MixGauss {
 	}
 
 	public static void updateRho(double[] R, double M) {
-		for (int k = 0; k < R.length; k++) {
+		for (int k = 0; k < rho.length; k++) {
 			rho[k] = R[k] / M;
 		}
 	}
