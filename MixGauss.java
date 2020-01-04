@@ -16,7 +16,7 @@ public class MixGauss {
 		for (int i = 0; i < variance.length; i++) {
 			rho[i] = 1.0/K;
 			for (int j = 0; j < variance[i].length; j++) {
-				variance[i][j] = 1;
+				variance[i][j] = 0.00010;
 			}
 		}
 	}
