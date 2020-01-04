@@ -106,7 +106,16 @@ public class MixGauss {
 	 */
 	public static double Deplct(double[][] x, double[][] m, double[][] r) {
 		double tot = 0;
-		double[] R = Rk(r);
+		double[] R = new double[rho.length];
+		for(int k=0; k<p.length; k=k+1){
+			R[k] = 0;
+		}
+		for(int k=0; k<p.length; k++){
+			for(int d=0; d<r.length; d++)
+			{
+				R[k] = R[k]+r[d][k];
+			}
+		}
 		double[][] oldm = new double[m.length][m[0].length];
 		for (int i = 0; i < oldm.length; i++) {
 			for (int j = 0; j < oldm[i].length; j++) {
