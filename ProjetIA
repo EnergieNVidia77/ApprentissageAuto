@@ -41,8 +41,23 @@ public class MixGauss {
 		return result;
 	}
 	
-	public static double[][] Assigner(double[][] data, double[][] center){
+	public static double[][] Assigner(double[][] data, double[][] center, double[][] variance, double[] densite){
 		double[][] result = new double[data.length][center.length];
+		for(int i = 0; i < result.length; i++) {
+			double sum = 0;
+			for(int k = 0; k < result[i].length; k++) {
+				double dens = densite[k];
+				for(int j = 0; j < data[i].length; j++) {
+					dens = dens*(1/Math.sqrt(2*Math.PI*variance[k][j]));
+					dens = dens*Math.exp(-((data[i][j]-center[k][j])*(data[i][j]-center[k][j]))/(2*variance[k][j]));
+				}
+				sum += dens;
+				result[i][k] = dens;
+			}
+			for(int k = 0; k < data[i].length; k++) {
+				data[i][k] = data[i][k]/sum;
+			}
+		}
 		return result;
 	}
 	
