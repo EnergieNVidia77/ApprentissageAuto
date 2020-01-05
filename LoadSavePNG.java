@@ -18,7 +18,7 @@ public class LoadSavePNG
 
 	static String Savepath = System.getProperty("user.dir") + "/";
 
-	public static void imageWriting(BufferedImage bui, Color[] tabColor, int height, int width, double[][] r, int n) throws IOException {
+	public static void imageWriting(BufferedImage bui, Color[] tabColor, int height, int width, double[][] r, int n, boolean invert) throws IOException {
 		for(int c = 0; c < K; c++){
 			Color[] pic = new Color[tabColor.length];
 			for(int i = 0; i < r.length; i++){
@@ -34,11 +34,17 @@ public class LoadSavePNG
 					pic[i] = tabColor[i];
 				}
 				else{
-					pic[i] = new Color(255, 255, 255);
+					if (invert)
+						pic[i] = new Color(255, 255, 255);
+					else
+						pic[i] = new Color(0, 0, 0);
 				}
 			}
 			for(int i=0; i<pic.length; i++){
-				pic[i] = new Color(255-pic[i].getRed(),255-pic[i].getGreen(),255-pic[i].getBlue());
+				if (invert)
+					pic[i] = new Color(255-pic[i].getRed(),255-pic[i].getGreen(),255-pic[i].getBlue());
+				else
+					pic[i] = new Color(pic[i].getRed(),pic[i].getGreen(), pic[i].getBlue());
 			}
 
 			System.out.println("Saving new image !");
@@ -110,7 +116,7 @@ public class LoadSavePNG
 		}
 
 		System.out.println("Begenning writing...");
-		imageWriting(bui, tabColor, height, width, r, 42);
+		imageWriting(bui, tabColor, height, width, r, 42, true);
 		System.out.println("End of programm");
 	}
 
@@ -145,7 +151,7 @@ public class LoadSavePNG
 			for (int i = 0; i < im_pixels.length; i++) {
 				tabColor[i] = new Color(im_pixels[i]);
 			}
-			imageWriting(bui, tabColor, height, width, r, n);
+			imageWriting(bui, tabColor, height, width, r, n, true);
 			System.out.println("End of loop #" + n);
 		}
 		writeScore(scores);
@@ -187,10 +193,49 @@ public class LoadSavePNG
 		System.out.println("End of programm");
 	}
 
+	public static void question3() throws IOException {
+		K = 11;
+		BufferedImage bui = ImageIO.read(new File(System.getProperty("user.dir") + "/src/lego.jpg"));
+		int width = bui.getWidth();
+		int height = bui.getHeight();
+		int[] im_pixels = bui.getRGB(0, 0, width, height, null, 0, width);
+		double[][] data = MixGauss.genData(im_pixels);
+		double[][] centres = MixGauss.genLegoCenter(K);
+		double[][] var = MixGauss.InitVariance();
+		double[] dens = MixGauss.InitDensite();
+		double[][] r = new double[data.length][centres.length];
+		double eps=0.09;
+		double maj = 10;
+		int nbEpoch = 0;
+		ArrayList<Double> majs = new ArrayList<Double>();
+
+		while(maj > eps) {
+			System.out.println("Epoque #" + nbEpoch);
+			r = MixGauss.Assigner(data, centres, var, dens);
+			maj = MixGauss.Deplct(data, centres, r, var, dens);
+			majs.add(maj);
+			System.out.println("Maj : " + maj);
+			nbEpoch++;
+		}
+		writeData(majs);
+		System.out.println("\nNb epoques: " + nbEpoch);
+		System.out.println("Score: " + MixGauss.score(data, centres, var, dens) + "\n");
+
+		Color[] tabColor = new Color[im_pixels.length];
+		for(int i = 0 ; i<im_pixels.length ; i++){
+			tabColor[i] = new Color(im_pixels[i]);
+		}
+
+		System.out.println("Begenning writing...");
+		imageWriting(bui, tabColor, height, width, r, 0, true);
+		System.out.println("End of programm");
+	}
+
 	public static void main(String[] args) throws IOException {
 		//base();
 		//question1();
-		question2();
+		//question2();
+		question3();
 	}
 
 }

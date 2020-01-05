@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class MixGauss {
@@ -72,11 +73,28 @@ public class MixGauss {
 		return result;
 	}
 
+	public static double[][] genLegoCenter(int k) {
+		K = k;
+		double[][] result = new double[K][3];
+		result[0] = new double[]{0.0, 0.0, 0.0};
+		result[1] = new double[]{1.0, 1.0, 1.0};
+		result[2] = new double[]{225/255.0, 100/255.0, 200/255.0};
+		result[3] = new double[]{50/255.0, 50/255.0, 175/255.0};
+		result[4] = new double[]{175/255.0, 100/255.0, 200/255.0};
+		result[5] = new double[]{100/255.0, 100/255.0, 125/255.0};
+		result[6] = new double[]{50/255.0, 1.0, 225/255.0};
+		result[7] = new double[]{175/255.0, 150/255.0, 150/255.0};
+		result[8] = new double[]{25/255.0, 100/255.0, 225/255.0};
+		result[9] = new double[]{25/255.0, 50/255.0, 200/255.0};
+		result[10] = new double[]{125/255.0, 125/255.0, 125/255.0};
+		return result;
+	}
+
 	public static double[][] InitVariance() {
 		double[][] var = new double[K][D];
 		for(int i = 0; i < var.length; i++) {
 			for(int j = 0; j < var[i].length; j++) {
-				var[i][j] = 0.0002;
+				var[i][j] = 0.0003;
 			}
 		}
 		return var;
