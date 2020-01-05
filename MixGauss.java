@@ -3,8 +3,8 @@ import java.util.Arrays;
 
 public class MixGauss {
 	static int D = 3; // deux dimensions
-	static int K = 8; // trois centres
-	
+	static int K = 10; // trois centres
+
 	public static double[][] genData(int[] tabPix) {
 		double[][] result = new double[tabPix.length][D];
 		for(int i = 0; i < tabPix.length; i++) {
@@ -15,68 +15,90 @@ public class MixGauss {
 		}
 		return result;
 	}
-	public static double[][] genCenter(){
+	public static double[][] genCenter(int k){
+		K = k;
 		double[][] result = new double[K][D];
-		//fond inversé
-        result[0][0] = 59.0/255.0;
-        result[0][1] = 78.0/255.0;
-        result[0][2] = 147.0/255.0;
-        
-        //reflet inversé
-        result[1][0] = 98.0/255.0;
-        result[1][1] = 95.0/255.0;
-        result[1][2] = 102.0/255.0;
-        
-        //jaune inversé
-        result[2][0] = 32.0/255.0;
-        result[2][1] = 35.0/255.0;
-        result[2][2] = 255.0/255.0;
-        
-        //vert inversé
-        result[3][0] = 216.0/255.0;
-        result[3][1] = 48.0/255.0;
-        result[3][2] = 206.0/255.0;
-        
-        //bleu inversé
-        result[4][0] = 255.0/255.0;
-        result[4][1] = 151.0/255.0;
-        result[4][2] = 96.0/255.0;
-        
-        //rouge inversé
-        result[5][0] = 90.0/255.0;
-        result[5][1] = 206.0/255.0;
-        result[5][2] = 221.0/255.0;
-        
-        //orange inversé
-        result[6][0] = 4.0/255.0;
-        result[6][1] = 160.0/255.0;
-        result[6][2] = 245.0/255.0;
-        
-        //noir inversé
-        result[7][0] = 196.0/255.0;
-        result[7][1] = 207.0/255.0;
-        result[7][2] = 229.0/255.0;
-        
+		//fond inversÃ©
+		result[0][0] = 59.0/255.0;
+		result[0][1] = 78.0/255.0;
+		result[0][2] = 147.0/255.0;
+
+		//reflet inversÃ©
+		result[1][0] = 98.0/255.0;
+		result[1][1] = 95.0/255.0;
+		result[1][2] = 102.0/255.0;
+
+		//jaune inversÃ©
+		result[2][0] = 32.0/255.0;
+		result[2][1] = 35.0/255.0;
+		result[2][2] = 255.0/255.0;
+
+		//vert inversÃ©
+		result[3][0] = 216.0/255.0;
+		result[3][1] = 48.0/255.0;
+		result[3][2] = 206.0/255.0;
+
+		//bleu inversÃ©
+		result[4][0] = 255.0/255.0;
+		result[4][1] = 151.0/255.0;
+		result[4][2] = 96.0/255.0;
+
+		//rouge inversÃ©
+		result[5][0] = 90.0/255.0;
+		result[5][1] = 206.0/255.0;
+		result[5][2] = 221.0/255.0;
+
+		//orange inversÃ©
+		result[6][0] = 4.0/255.0;
+		result[6][1] = 160.0/255.0;
+		result[6][2] = 245.0/255.0;
+
+		//noir inversÃ©
+		result[7][0] = 196.0/255.0;
+		result[7][1] = 207.0/255.0;
+		result[7][2] = 229.0/255.0;
+
 		return result;
 	}
 
-	
+	public static double[][] randomGenCenter(int k) {
+		K = k;
+		double[][] result = new double[K][D];
+		for (int i = 0; i < K; i++) {
+			for (int j = 0; j < D; j++) {
+				result[i][j] = Math.random();
+			}
+		}
+		return result;
+	}
+
 	public static double[][] InitVariance() {
 		double[][] var = new double[K][D];
 		for(int i = 0; i < var.length; i++) {
 			for(int j = 0; j < var[i].length; j++) {
-				var[i][j] = 0.00007;
+				var[i][j] = 0.0002;
 			}
 		}
 		return var;
 	}
-	
+
+	public static double[][] randomInitVariance() {
+		double[][] var = new double[K][D];
+		double value = Math.random()/100.0 + 0.0002;
+		for(int i = 0; i < var.length; i++) {
+			for(int j = 0; j < var[i].length; j++) {
+				var[i][j] = value;
+			}
+		}
+		return var;
+	}
+
 	public static double[] InitDensite() {
-		double[] p = new double[K];
-        for(int i = 0; i<p.length; i++){
-        	p[i] = 1.0/(double) K;
-        }
-        return p;
+		double[] rho = new double[K];
+		for(int i = 0; i<rho.length; i++){
+			rho[i] = 1.0/(double) K;
+		}
+		return rho;
 	}
 
 	public static double dist(double[] pt1, double[] pt2) {
@@ -86,17 +108,17 @@ public class MixGauss {
 		}
 		return Math.sqrt(distance);
 	}
-	
 
-	public static double[][] Assigner(double[][] data, double[][] center, double[][] variance, double[] densite){
-		double[][] result = new double[data.length][center.length];
+
+	public static double[][] Assigner(double[][] x, double[][] m, double[][] variance, double[] rho){
+		double[][] result = new double[x.length][m.length];
 		for(int d = 0; d < result.length; d++) {
 			double sum = 0;
 			for(int k = 0; k < result[d].length; k++) {
-				double dens = densite[k];
-				for(int i = 0; i < data[d].length; i++) {
+				double dens = rho[k];
+				for(int i = 0; i < x[d].length; i++) {
 					dens = dens*(1/Math.sqrt(2*Math.PI*variance[k][i]));
-					dens = dens*Math.exp(-((data[d][i]-center[k][i])*(data[d][i]-center[k][i]))/(2*variance[k][i]));
+					dens = dens*Math.exp(-((x[d][i]-m[k][i])*(x[d][i]-m[k][i]))/(2*variance[k][i]));
 				}
 				sum += dens;
 				result[d][k] = dens;
@@ -171,8 +193,23 @@ public class MixGauss {
 		for (int i = 0; i < m.length; i++) {
 			tot += dist(oldm[i], m[i]);
 		}
-		System.out.println("Tot: " + tot);
 		return tot;
 	}
-}
 
+	public static double score(double[][] x, double[][] m, double[][] variance, double[] rho) {
+		double score = 0;
+		for (int d = 0; d < x.length; d++) {
+			double L = 0;
+			for (int k = 0; k < K; k++) {
+				double temp = rho[k];
+				for (int i = 0; i < D; i++) {
+					temp *= 1/Math.sqrt(2 * Math.PI * variance[k][i]);
+					temp *= Math.exp(-(Math.pow(x[d][i]-m[k][i], 2)/(2 * variance[k][i])));
+				}
+				L += temp;
+			}
+			score += Math.log(L);
+		}
+		return score*(1.0/x.length);
+	}
+}
