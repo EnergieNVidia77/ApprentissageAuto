@@ -65,7 +65,7 @@ public class MixGauss {
 		double[][] var = new double[K][D];
 		for(int i = 0; i < var.length; i++) {
 			for(int j = 0; j < var[i].length; j++) {
-				var[i][j] = 0.50;
+				var[i][j] = 0.00007;
 			}
 		}
 		return var;
@@ -90,19 +90,19 @@ public class MixGauss {
 
 	public static double[][] Assigner(double[][] data, double[][] center, double[][] variance, double[] densite){
 		double[][] result = new double[data.length][center.length];
-		for(int i = 0; i < result.length; i++) {
+		for(int d = 0; d < result.length; d++) {
 			double sum = 0;
-			for(int k = 0; k < result[i].length; k++) {
+			for(int k = 0; k < result[d].length; k++) {
 				double dens = densite[k];
-				for(int j = 0; j < data[i].length; j++) {
-					dens = dens*(1/Math.sqrt(2*Math.PI*variance[k][j]));
-					dens = dens*Math.exp(-((data[i][j]-center[k][j])*(data[i][j]-center[k][j]))/(2*variance[k][j]));
+				for(int i = 0; i < data[d].length; i++) {
+					dens = dens*(1/Math.sqrt(2*Math.PI*variance[k][i]));
+					dens = dens*Math.exp(-((data[d][i]-center[k][i])*(data[d][i]-center[k][i]))/(2*variance[k][i]));
 				}
 				sum += dens;
-				result[i][k] = dens;
+				result[d][k] = dens;
 			}
-			for(int k = 0; k < result[i].length; k++) {
-				result[i][k] = result[i][k]/sum;
+			for(int k = 0; k < result[d].length; k++) {
+				result[d][k] = result[d][k]/sum;
 			}
 		}
 		return result;

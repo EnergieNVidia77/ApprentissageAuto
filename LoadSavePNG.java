@@ -9,26 +9,53 @@ import java.util.Arrays;
 
 public class LoadSavePNG
 {
-	public static int K;
-	public static int D;
+	public static int K = 8;
+	public static int D = 3;
 	
 	static String path = "C:\\Users\\Toufic\\Documents\\M&Ms projet\\";
-    static String imageMMS = path + "mms.png";
-
-	public static boolean checkClass(double[] r, int idx) {
-		int highestIdx = 0;
-		double highest = 0;
-		for (int i = 0; i < r.length; i++) {
-			if (r[i] > highest) {
-				highest = r[i];
-				highestIdx = i;
+    static String imageMMS = path + "test.png";
+    
+    static String Savepath = "C:\\Users\\Toufic\\Pictures\\ProjetIA\\";
+    
+    public static void imageWriting(BufferedImage bui, Color[] tabColor, int height, int width, double[][] r) throws IOException {
+		for(int c = 2; c < K; c++){
+			Color[] pic = new Color[tabColor.length];
+			for(int i = 0; i < r.length; i++){
+				double max = 0;
+				int ind = 0;
+				for(int j=0; j<r[i].length; j=j+1){
+					if(max < r[i][j]){
+						max = r[i][j];
+						ind = j;
+					}
+				}
+				if(ind == c){
+					pic[i] = tabColor[i];
+				}
+				else{
+					pic[i] = new Color(255, 255, 255);
+				}
 			}
+			for(int i=0; i<pic.length; i++){
+				pic[i] = new Color(255-pic[i].getRed(),255-pic[i].getGreen(),255-pic[i].getBlue());
+			}
+			
+			System.out.println("Saving new image !");
+			
+	        /** sauvegarde de l'image **/
+	        BufferedImage bui_out = new BufferedImage(bui.getWidth(),bui.getHeight(),BufferedImage.TYPE_3BYTE_BGR);
+	        for(int i=0 ; i<height ; i++)
+	        {
+	        	for(int j=0 ; j<width ; j++)
+	        	{
+	        		bui_out.setRGB(j,i,pic[i*width+j].getRGB());
+	        	}
+	        }
+	        ImageIO.write(bui_out, "PNG", new File(Savepath +"image"+(c-1)+".png"));
 		}
-		return highestIdx == idx;
-	}
-
-	public static void main(String[] args) throws IOException
-	{
+    }
+    
+	public static void main(String[] args) throws IOException {
 
 		// Lecture de l'image ici
 		BufferedImage bui = ImageIO.read(new File(imageMMS));
@@ -56,25 +83,22 @@ public class LoadSavePNG
 			System.out.println("Epoque #" + nbEpoch);
 			r = MixGauss.Assigner(data, centres, var, dens);
 			maj = MixGauss.Deplct(data, centres, r, var, dens);
-			System.out.println(maj);
+			System.out.println("Maj : " + maj);
 			nbEpoch++;
 		}
 		System.out.println("\nNb epoques: " + nbEpoch + "\n");
-		System.out.println("Proba pt1: " + Arrays.toString(r[1]) + "\nProba pt4000: " + Arrays.toString(r[4000]));
-		System.out.println("Pos ctr1: " + Arrays.toString(centres[1]) + "\nPos ctr2: " + Arrays.toString(centres[2]) + "\n");
-
-		BufferedImage res = new BufferedImage(bui.getWidth(), bui.getHeight(), BufferedImage.TYPE_INT_RGB);
-		for (int i = 0; i < height; i++) {
-			for (int j = 0; j < width; j++) {
-				int idx = i*width+j;
-
-				if (checkClass(r[idx], 3)) {
-					res.setRGB(j, i, bui.getRGB(j, i));
-				} else {
-					res.setRGB(j, i, Color.black.getRGB());
-				}
-			}
-		}
-		ImageIO.write(res, "PNG", new File(path + "res.png"));
+		/*System.out.println("Proba pt1: " + Arrays.toString(r[1]) + "\nProba pt4000: " + Arrays.toString(r[4000]));
+		System.out.println("Pos ctr1: " + Arrays.toString(centres[1]) + "\nPos ctr2: " + Arrays.toString(centres[2]) + "\n");*/
+		
+		Color[] tabColor = new Color[im_pixels.length];
+        
+        for(int i = 0 ; i<im_pixels.length ; i++){
+        	tabColor[i] = new Color(im_pixels[i]);
+        }
+        
+        System.out.println("Begenning writing...");
+        imageWriting(bui, tabColor, height, width, r);
+		System.out.println("End of programm");
 	}
+		
 }
